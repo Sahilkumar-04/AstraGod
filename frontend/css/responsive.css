@@ -1,0 +1,54 @@
+/* ==========================================================
+   AstraGod — Responsive Rules
+   ========================================================== */
+
+/* Tablets */
+@media (max-width: 900px) {
+  .suggestions { grid-template-columns: repeat(2, minmax(140px, 1fr)); }
+}
+
+/* Mobile: sidebar becomes a slide-out drawer */
+@media (max-width: 720px) {
+  .app {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: 280px;
+    z-index: 40;
+    transform: translateX(-100%);
+    margin-left: 0 !important;
+    box-shadow: var(--shadow-elevated);
+  }
+  .app.sidebar-open .sidebar { transform: translateX(0); }
+  .app.sidebar-open .sidebar-overlay { display: block; }
+
+  .sidebar__collapse { display: none; }
+  .topbar__menu { display: flex; }
+
+  .welcome__title { font-size: 24px; }
+  .suggestions { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .suggestion-card { font-size: 12.5px; padding: 12px 10px; }
+
+  .messages { padding: 14px 12px 8px; gap: 18px; }
+  .msg__content { font-size: 14px; }
+
+  .composer { padding: 10px 10px 12px; }
+
+  .modal { max-width: 100%; margin: 0 8px; }
+}
+
+@media (max-width: 420px) {
+  .suggestions { grid-template-columns: 1fr; }
+  .brand__name { font-size: 15px; }
+}
+
+/* Code blocks always scroll horizontally rather than wrapping/breaking layout */
+.code-block pre {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ensure long unbroken tokens (URLs, hashes) do not blow out mobile width outside code blocks */
+.msg__content { overflow-wrap: anywhere; }

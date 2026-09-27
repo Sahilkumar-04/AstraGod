@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AstraGod — Your Intelligent AI Companion</title>
+<meta name="description" content="AstraGod is a modern AI chatbot with conversational memory, secure AI API integration, Markdown/code rendering, chat history, dark mode, and responsive design." />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+
+<link rel="stylesheet" href="css/themes.css" />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/responsive.css" />
+
+<!-- Markdown rendering + syntax highlighting (CDN, client-side only) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
+</head>
+<body>
+<a class="skip-link" href="#chat-input">Skip to chat input</a>
+
+<div class="app" id="app">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar" id="sidebar" aria-label="Conversation sidebar">
+    <div class="sidebar__top">
+      <div class="brand">
+        <svg class="brand__logo" viewBox="0 0 48 48" aria-hidden="true">
+          <defs>
+            <linearGradient id="astraGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#7C6CFF"/>
+              <stop offset="100%" stop-color="#31D6C6"/>
+            </linearGradient>
+          </defs>
+          <path fill="url(#astraGrad)" d="M24 2 L29 18 L45 24 L29 30 L24 46 L19 30 L3 24 L19 18 Z"/>
+        </svg>
+        <span class="brand__name">AstraGod</span>
+      </div>
+      <button class="icon-btn sidebar__collapse" id="collapseSidebarBtn" aria-label="Collapse sidebar" title="Collapse sidebar">
+        <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+    <button class="btn btn--primary sidebar__new-chat" id="newChatBtn">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      New Chat
+    </button>
+
+    <div class="sidebar__search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input type="search" id="searchConversations" placeholder="Search conversations" aria-label="Search conversations" />
+    </div>
+
+    <nav class="sidebar__history" id="conversationList" aria-label="Recent chats">
+      <!-- Conversation items injected by JS -->
+    </nav>
+
+    <div class="sidebar__bottom">
+      <button class="sidebar__link" id="exportDataBtn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Export Data
+      </button>
+      <label class="sidebar__link" for="importFileInput" id="importDataLabel">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V9m0 0l-4 4m4-4l4 4M5 3h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Import Data
+      </label>
+      <input type="file" id="importFileInput" accept="application/json" hidden />
+      <button class="sidebar__link" id="clearHistoryBtn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2m2 0v14a1 1 0 01-1 1H7a1 1 0 01-1-1V6h12z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Clear History
+      </button>
+      <button class="sidebar__link" id="settingsBtn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.7 1.7 0 00.33 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.33 1.7 1.7 0 00-1 1.56V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1-1.56 1.7 1.7 0 00-1.87.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.7 1.7 0 00.33-1.87 1.7 1.7 0 00-1.56-1H3a2 2 0 110-4h.09a1.7 1.7 0 001.56-1 1.7 1.7 0 00-.33-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06a1.7 1.7 0 001.87.33H9a1.7 1.7 0 001-1.56V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.56 1.7 1.7 0 001.87-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.7 1.7 0 00-.33 1.87V9a1.7 1.7 0 001.56 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.56 1z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        Settings
+      </button>
+      <div class="profile">
+        <div class="profile__avatar" aria-hidden="true">S</div>
+        <span class="profile__name">Sahil</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main" id="main">
+    <header class="topbar">
+      <button class="icon-btn topbar__menu" id="openSidebarBtn" aria-label="Open sidebar">
+        <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <span class="topbar__title" id="currentChatTitle">AstraGod</span>
+      <button class="icon-btn topbar__theme" id="themeToggleBtn" aria-label="Toggle theme" title="Toggle theme">
+        <svg viewBox="0 0 24 24" id="themeIcon"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.36 6.36l-.7-.7M6.34 6.34l-.7-.7m12.02 0l-.7.7M6.34 17.66l-.7.7M12 7a5 5 0 100 10 5 5 0 000-10z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </header>
+
+    <section class="chat" id="chatSection" aria-live="polite">
+
+      <!-- Welcome screen -->
+      <div class="welcome" id="welcomeScreen">
+        <div class="welcome__logo">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <path fill="url(#astraGrad)" d="M24 2 L29 18 L45 24 L29 30 L24 46 L19 30 L3 24 L19 18 Z"/>
+          </svg>
+        </div>
+        <h1 class="welcome__title">Welcome to AstraGod</h1>
+        <p class="welcome__subtitle">Your Intelligent AI Companion.</p>
+        <p class="welcome__prompt">How can I help you today?</p>
+
+        <div class="suggestions" id="suggestionGrid">
+          <button class="suggestion-card" data-prompt="Help me write code for ">💻 Help me write code</button>
+          <button class="suggestion-card" data-prompt="Help me debug this program:\n\n">🐛 Debug my program</button>
+          <button class="suggestion-card" data-prompt="Explain this concept clearly: ">📚 Explain a concept</button>
+          <button class="suggestion-card" data-prompt="Help me plan and build a project idea: ">🚀 Help me build a project</button>
+          <button class="suggestion-card" data-prompt="Help me solve this problem: ">🧠 Solve a problem</button>
+          <button class="suggestion-card" data-prompt="Improve the writing below:\n\n">✍️ Improve my writing</button>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div class="messages" id="messagesContainer" hidden></div>
+
+    </section>
+
+    <!-- Composer -->
+    <footer class="composer">
+      <div class="composer__inner">
+        <div class="composer__box">
+          <textarea
+            id="chat-input"
+            class="composer__textarea"
+            placeholder="Message AstraGod..."
+            rows="1"
+            aria-label="Message AstraGod"
+          ></textarea>
+          <div class="composer__actions">
+            <button class="icon-btn composer__stop" id="stopBtn" hidden aria-label="Stop generating" title="Stop generating">
+              <svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+            </button>
+            <button class="icon-btn composer__send" id="sendBtn" aria-label="Send message" title="Send">
+              <svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 8 6 8-16-8z" fill="currentColor"/></svg>
+            </button>
+          </div>
+        </div>
+        <p class="composer__hint">AstraGod can make mistakes. Verify important information.</p>
+      </div>
+    </footer>
+  </main>
+</div>
+
+<!-- ================= SETTINGS MODAL ================= -->
+<div class="modal-overlay" id="settingsOverlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="modal__header">
+      <h2 id="settingsTitle">Settings</h2>
+      <button class="icon-btn" id="closeSettingsBtn" aria-label="Close settings">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <div class="modal__body">
+      <section class="settings-section">
+        <h3>Appearance</h3>
+        <div class="segmented" id="themeSegmented">
+          <button data-theme-choice="dark" class="segmented__btn">Dark</button>
+          <button data-theme-choice="light" class="segmented__btn">Light</button>
+          <button data-theme-choice="system" class="segmented__btn">System</button>
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <h3>Chat</h3>
+        <label class="switch-row">
+          <span>Enter to send</span>
+          <input type="checkbox" id="enterToSendToggle" checked />
+        </label>
+        <label class="switch-row">
+          <span>Show timestamps</span>
+          <input type="checkbox" id="timestampsToggle" checked />
+        </label>
+        <label class="switch-row">
+          <span>Animations</span>
+          <input type="checkbox" id="animationsToggle" checked />
+        </label>
+      </section>
+
+      <section class="settings-section">
+        <h3>AI</h3>
+        <label class="field-row">
+          <span>Temperature <output id="temperatureValue">0.7</output></span>
+          <input type="range" id="temperatureSlider" min="0" max="1.5" step="0.1" value="0.7" />
+        </label>
+        <label class="field-row">
+          <span>Response length</span>
+          <select id="responseLengthSelect">
+            <option value="512">Short</option>
+            <option value="1024" selected>Medium</option>
+            <option value="2048">Long</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="settings-section">
+        <h3>Data</h3>
+        <div class="settings-actions">
+          <button class="btn btn--secondary" id="modalExportBtn">Export chats</button>
+          <label class="btn btn--secondary" for="modalImportInput">Import chats</label>
+          <input type="file" id="modalImportInput" accept="application/json" hidden />
+          <button class="btn btn--danger" id="modalClearBtn">Clear history</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CONFIRM DIALOG ================= -->
+<div class="modal-overlay" id="confirmOverlay" hidden>
+  <div class="modal modal--small" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="modal__header">
+      <h2 id="confirmTitle">Are you sure?</h2>
+    </div>
+    <div class="modal__body">
+      <p id="confirmMessage">This action cannot be undone.</p>
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn--secondary" id="confirmCancelBtn">Cancel</button>
+      <button class="btn btn--danger" id="confirmOkBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer" aria-live="assertive"></div>
+
+<script src="js/storage.js"></script>
+<script src="js/markdown.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

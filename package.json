@@ -1,0 +1,38 @@
+{
+  "name": "astragod",
+  "version": "1.0.0",
+  "description": "AstraGod — Your Intelligent AI Companion. A modern AI chatbot with conversational memory, secure AI API integration, Markdown/code rendering, chat history, dark mode, and responsive design.",
+  "main": "backend/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js"
+  },
+  "keywords": [
+    "ai",
+    "chatbot",
+    "artificial-intelligence",
+    "javascript",
+    "nodejs",
+    "express",
+    "ai-assistant",
+    "web-development",
+    "frontend",
+    "backend"
+  ],
+  "author": "Sahil",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
